@@ -35,18 +35,21 @@ def check_order(order, option):
         return "Ви купили " + ", ".join(order) + " " + convertator(total)
     else:
         return "Ви вказали невідому опцію"
-        
-print(convertator(100))
-print(convertator(23.98763))  
-print(convertator(83282.2))  
 
-print(availability("хліб", "чай", "робот", "ручка"))
+if __name__ == "__main__":    
+    print(convertator(100))
+    print(convertator(23.98763))  
+    print(convertator(83282.2))  
 
-print(check_order(["чай", "зубна щітка"], "price"))
+    print(availability("хліб", "чай", "робот", "ручка"))
 
-print(check_order(["телефон", "зубна щітка"], "buy"))
+    print(check_order(["чай", "зубна щітка"], "price"))
 
-print(check_order(["телефон", "кетчуп"], "buy"))
+    print(check_order(["телефон", "зубна щітка"], "buy"))
+
+    print(check_order(["телефон", "кетчуп"], "buy"))
+
         
         
         
+
