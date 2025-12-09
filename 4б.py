@@ -7,44 +7,85 @@ store = {
     "ручка": 10.00
 }
 
+
+# 1. Функція форматує ціну
+def format_price(price):
+    return f"ціна: {price:.2f} грн"
+
+
+# 2. Функція перевіряє наявність переданих товарів
+def check_products(*items):
+    return {item: (item in store) for item in items}
+
+
+# 3. Функція обробляє замовлення
+def process_order(order):
+    availability = check_products(*order)
+
+    # Перевіряємо чи всі товари є у магазині
+    if not all(availability.values()):
+        print("\nДеяких товарів немає, замовлення неможливе.")
+        missing = [item for item, ok in availability.items() if not ok]
+        print("Відсутні товари:", ", ".join(missing))
+        return
+
+    # Якщо всі товари є
+    total = sum(store[item] for item in order)
+
+    while True:
+        action = input("\nЩо хочеш зробити? (купити/ціна): ").lower()
+
+        if action == "ціна":
+            print(f"Загальна {format_price(total)}")
+
+        elif action == "купити":
+            print("Дякуємо за покупку!")
+            break
+
+        else:
+            print("Невідома команда. Напишіть 'купити' або 'ціна'.")
+
+
+# 4. НОВА ФУНКЦІЯ — збір товарів користувача
+def get_order():
+    order = []
+
+    while True:
+        items = input("\nВведіть товар (або 'стоп' щоб завершити): ").lower()
+
+        if items == "стоп":
+            break
+
+        # Підтримка введення кількох товарів через кому
+        for item in items.replace(" ", "").split(","):
+            if item in store:
+                print(f"Товар доступний, {format_price(store[item])}")
+
+                action = input("Хочеш додати в корзину? (так/ні): ").lower()
+                if action == "так":
+                    order.append(item)
+                    print(f"{item} додано в корзину.")
+            else:
+                print(f"Товар '{item}' не знайдено.")
+
+    return order
+
+
+# ---------------- ГОЛОВНА ЧАСТИНА ----------------
+
 print("Товари в магазині:")
 for name, price in store.items():
-    print(f"- {name}: {price} грн")
+    print(f"- {name}: {format_price(price)}")
 
-order = []
+order = get_order()   # ← тепер усе через функцію
 
-while True:
-    item = input("\nВведіть товар (або 'стоп' щоб завершити): ").lower()
-
-    if item == "стоп":
-        break
-
-    if item in store:
-        print(f"Товар доступний. Ціна: {store[item]} грн")
-
-        action = input("Хочеш додати в корзину? (так/ні): ").lower()
-
-        if action == "так":
-            order.append(item)
-            print(f"{item} додано в корзину.")
-    else:
-        print("На жаль, такого товару немає в магазині.")
-
-# Після завершення вводу
+# Після завершення вибору товарів
 if not order:
     print("\nВи нічого не вибрали.")
 else:
-    print("\nУ вашій корзині:")
+    print("\nВи вибрали:")
     for item in order:
-        print(f"- {item}: {store[item]} грн")
+        print(f"- {item}: {format_price(store[item])}")
 
-    total = sum(store[item] for item in order)
-    print(f"Загальна сума: {total} грн")
-
-    buy = input("Купити ці товари? (так/ні): ")
-
-    if buy.lower() == "так":
-        print("Дякуємо за покупку!")
-    else:
-        print("Покупку скасовано.")
-
+    # Обробка замовлення
+    process_order(order)
